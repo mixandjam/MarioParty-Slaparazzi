@@ -1,0 +1,41 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="TopEnable" style="background-color: rgba(255, 255, 255, 0.2); flex-direction: row; justify-content: space-between; min-height: 25px; min-width: 230px;">
+        <Style src="ObjectPlacer.uss" />
+        <ui:Label text="LMB - Place Object" style="padding-left: 5px; padding-right: 5px; padding-top: 5px; padding-bottom: 5px;" />
+        <ui:Toggle label="Enable Tool" name="Enabled-Toggle" value="false" style="-unity-font-style: bold; padding-right: 6px; -unity-text-align: middle-left; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; padding-left: 6px;" />
+    </ui:VisualElement>
+    <ui:ScrollView view-data-key="scrollviewdata">
+        <Style src="ObjectPlacer.uss" />
+        <ui:VisualElement style="min-width: 230px; min-height: auto;">
+            <ui:Foldout text="Object/Prefab" name="Object-Foldout">
+                <uie:ObjectField label="Object" name="GameObject-Picker" />
+            </ui:Foldout>
+            <ui:Foldout text="Options" name="Options-Foldout">
+                <ui:TextField picking-mode="Ignore" label="Name" text="Unnamed" name="Name-Field">
+                    <ui:Toggle name="Name-Toggle" />
+                </ui:TextField>
+                <uie:ObjectField label="Parent" name="Parent-Picker" />
+                <uie:TagField label="Tag" value="Untagged" name="Tag-Field" />
+                <uie:LayerField label="Layer" name="Layer-Field" />
+                <ui:Toggle label="Static" name="Static-Toggle" class="toggle-right" />
+            </ui:Foldout>
+            <ui:Foldout text="Position" name="Position-Foldout">
+                <uie:Vector3Field label="Offset" name="Offset-Field" />
+                <ui:Toggle label="Align to 1 Meter Grid" name="Align-Toggle" class="toggle-right" />
+            </ui:Foldout>
+            <ui:Foldout text="Rotation" name="Rotation-Foldout">
+                <uie:Vector3Field label="Min" name="RotationMin-Field" />
+                <uie:Vector3Field label="Max" name="RotationMax-Field" />
+                <ui:Toggle label="Align to Normal Direction" name="Normal-Toggle" value="false" class="toggle-right" />
+            </ui:Foldout>
+            <ui:Foldout text="Scale" name="Scale-Foldout">
+                <uie:Vector3Field label="Min" name="ScaleMin-Field" x="1" y="1" z="1" />
+                <uie:Vector3Field label="Max" name="ScaleMax-Field" x="1" y="1" z="1" />
+                <ui:Toggle label="Scale Uniformly from X value" name="ScaleUniform-Toggle" value="false" class="toggle-right" />
+            </ui:Foldout>
+        </ui:VisualElement>
+    </ui:ScrollView>
+    <ui:Label text="Tool by Ryan Pocock @autumnpioneer" style="opacity: 1; -unity-text-align: middle-center; padding-top: 4px; padding-bottom: 4px; border-top-width: 1px; border-top-color: rgba(0, 0, 0, 0.39); color: rgba(0, 0, 0, 0.25);">
+        <Style src="ObjectPlacer.uss" />
+    </ui:Label>
+</ui:UXML>
