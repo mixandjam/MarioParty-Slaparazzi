@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
+using UnityEngine.Animations.Rigging;
 
 public class MovementInput : MonoBehaviour {
 
@@ -44,6 +45,12 @@ public class MovementInput : MonoBehaviour {
     public float StartAnimTime = 0.3f;
     [Range(0, 1f)]
     public float StopAnimTime = 0.15f;
+	public Rig headLookRig;
+
+	[Space]
+
+	[Header("Polish")]
+	public Renderer characterEye;
 
 	// Use this for initialization
 	void Start () {
@@ -61,6 +68,8 @@ public class MovementInput : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.P) && !isAI)
 		{
 			anim.SetTrigger("bash");
+			//polish
+			StartCoroutine(SetTargetEye(1, new Vector2(.99f, -.33f)));
 		}
 
 		if (stunned)
@@ -75,6 +84,7 @@ public class MovementInput : MonoBehaviour {
 			anim.SetFloat("Blend", agent.velocity.magnitude, StartAnimTime, Time.deltaTime);
 		}
 
+
 		if (!isAI)
 			return;
 
@@ -83,6 +93,9 @@ public class MovementInput : MonoBehaviour {
 		if(playerColliders.Length > 0 && canHit && Vector3.Distance(transform.position, GameManager.instance.cameraPivot.GetChild(0).position) < 3 && !waiting)
 		{
 			anim.SetTrigger("bash");
+			//polish
+			StartCoroutine(SetTargetEye(1, new Vector2(.66f, 0)));
+
 			canHit = false;
 			agent.speed = 0;
 
@@ -200,13 +213,26 @@ public class MovementInput : MonoBehaviour {
 			GetComponent<MovementInput>().stunned = false;
 			GetComponent<MovementInput>().canMove = true;
 		}
+
+		//polish
+		StartCoroutine(SetTargetEye(1, new Vector2(.99f, -.33f)));
+
+	}
+
+	//polish
+	IEnumerator SetTargetEye(float time, Vector2 eyeOffset)
+	{
+		characterEye.material.SetTextureOffset("_BaseMap", eyeOffset);
+		yield return new WaitForSeconds(time);
+		characterEye.material.SetTextureOffset("_BaseMap", Vector2.zero);
 	}
 
 	private void OnTriggerEnter(Collider other)
 	{
 		if (other.CompareTag("Player") && other.transform != transform && !stunned)
 		{
-			print($"PlayerName: {transform.name} ContactName: {other.name}");
+			if(GetComponentInChildren<ParticleSystem>() != null)
+				GetComponentInChildren<ParticleSystem>().Play();
 			other.GetComponent<MovementInput>().SetStunned(transform.forward);
 		}
 
@@ -228,6 +254,6 @@ public class MovementInput : MonoBehaviour {
 	{
 		Gizmos.color = Color.red;
 		Vector3 origin = transform.position + (transform.forward);
-		Gizmos.DrawSphere(origin, .4f);
+		//Gizmos.DrawWireSphere(origin, .4f);
 	}
 }

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
 using Cinemachine;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int cameraSpotsAmount = 5;
     private readonly int[]  possibleScores = new int[] { 3, 2, 1, 0 };
     private readonly Color[] playerColors = new Color[] { Color.red, Color.blue, Color.yellow, Color.black };
+    public VertexGradient[] playerGradients;
 
     [Space]
 
@@ -49,7 +51,7 @@ public class GameManager : MonoBehaviour
     [Space]
 
     [Header("UI References")]
-    [SerializeField] private Canvas gameUI;
+    [SerializeField] private CanvasGroup gameUI;
     [SerializeField] private Transform pictureInterface;
     [SerializeField] private Transform pictureScoreTextHolder;
     [SerializeField] private Transform playerScoreTextHolder;
@@ -97,6 +99,9 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(CountdownSequence());
 
+        //initial camera movement and UI fade
+        DOVirtual.Float(1, 0, 3, SetInitialTargetWeight).SetEase(Ease.InOutBack).OnComplete(()=>gameUI.DOFade(1,.5f));
+
         IEnumerator CountdownSequence()
         {
             print("3"); yield return new WaitForSeconds(1); print("2"); yield return new WaitForSeconds(1); print("1");
@@ -110,6 +115,7 @@ public class GameManager : MonoBehaviour
         IEnumerator GameSequence()
         {
             currentRound++;
+            EventSystem.current.SetSelectedGameObject(roundImageHolder.GetChild(currentRound - 1).gameObject);
 
             SetAgentsDestination(Vector3.zero, true);
             ChooseRandomPhotoSpot(false);
@@ -148,6 +154,15 @@ public class GameManager : MonoBehaviour
     void SetTargetWeight(float weight)
     {
         targetGroup.m_Targets[1].weight = weight;
+        for (int i = 0; i < allPlayers.Length; i++)
+        {
+            allPlayers[i].headLookRig.weight = weight;
+        }
+    }
+
+    void SetInitialTargetWeight(float weight)
+    {
+        targetGroup.m_Targets[2].weight = weight;
     }
 
     void ChooseRandomPhotoSpot(bool start)
@@ -215,6 +230,7 @@ public class GameManager : MonoBehaviour
         SetAgentsDestination(Vector3.zero, true);
 
         cameraLight.DOIntensity(350, .02f).OnComplete(() => cameraLight.DOIntensity(0, .05f));
+        cameraLight.transform.parent.DOPunchScale(Vector3.one / 3, .5f, 10, 1);
 
         WaitForSeconds intervalWait = new WaitForSeconds(.1f);
         WaitForEndOfFrame frameWait = new WaitForEndOfFrame();
@@ -274,11 +290,18 @@ public class GameManager : MonoBehaviour
 
     void UpdateScore()
     {
-        for (int i = 0; i < playerScoreTextHolder.childCount; i++)
+        for (int i = 0; i < pictureScoreTextHolder.childCount; i++)
         {
-            playerScoreTextHolder.GetChild(i).DOComplete();
-            playerScoreTextHolder.GetChild(i).DOPunchScale(Vector3.one, .2f, 10, 1);
-            playerScoreTextHolder.GetChild(i).GetComponentInChildren<TextMeshProUGUI>().text = finalPlayerScores[i].score.ToString();
+            pictureScoreTextHolder.GetChild(i).DOScale(0, .2f);
+        }
+
+        for (int i = 0; i < currentPlayerScores.Count; i++)
+        {
+            int id = currentPlayerScores[i].id;
+            playerScoreTextHolder.GetChild(id).DOComplete();
+            playerScoreTextHolder.GetChild(id).DOPunchScale(Vector3.one/2, .2f, 10, 1);
+            PlayerScore p = finalPlayerScores.Find(x => x.id == id);
+            playerScoreTextHolder.GetChild(id).GetComponentInChildren<TextMeshProUGUI>().text = p.score.ToString();
         }
     }
     void SetPhotoScorePosition(bool show)
@@ -293,7 +316,8 @@ public class GameManager : MonoBehaviour
                 PlayerScore score = currentPlayerScores[i];
                 Vector3 pos = allPlayers[currentPlayerScores[i].id].transform.position;
                 TextMeshProUGUI textMesh = pictureScoreTextHolder.GetChild(i).GetComponent<TextMeshProUGUI>();
-                textMesh.color = playerColors[score.id];
+                //textMesh.color = playerColors[score.id];
+                textMesh.colorGradient = playerGradients[score.id];
                 Vector3 playerPosInPhoto = renderTextureCamera.WorldToScreenPoint(pos + Vector3.up);
                 pictureScoreTextHolder.GetChild(i).position = new Vector3((playerPosInPhoto.x / 3) + 700, playerPosInPhoto.y, playerPosInPhoto.z);
             }
