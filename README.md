@@ -37,5 +37,5 @@ You can see a running demo of the project in [this video](https://youtu.be/d5fIt
 <br>[![Twitter Follow](https://img.shields.io/twitter/follow/autumnpioneer.svg?style=social)](https://twitter.com/autumnpioneer)
 ## License
 
-**CODE** is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details<p>
-**3D Assets** are under the [Creative Commons](https://creativecommons.org/licenses/by-nc/3.0/) license - see the [LICENSE.md](https://github.com/mixandjam/MarioParty-Slaparazzi/blob/master/Assets/Models/RyanPocock/LICENSE) file for detail!
+**CODE** is licensed under the MIT License - see the [LICENSE.md](https://github.com/mixandjam/MarioParty-Slaparazzi/blob/master/LICENSE) file for details<p>
+**3D Assets** are under the [Creative Commons](https://creativecommons.org/licenses/by-nc/3.0/) license - see the [LICENSE.md](https://github.com/mixandjam/MarioParty-Slaparazzi/blob/master/Assets/Models/RyanPocock/LICENSE.md) file for detail!
